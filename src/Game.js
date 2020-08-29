@@ -16,13 +16,13 @@ function Game({ mode }) {
   const [starts, setStarts] = useState('')
   const [board, setBoard] = useState(['','','','','','','','',''])
   const [turn, setTurn] = useState('')
-  const [result, setResult] = useState({ winner: '', blocks: [] })
+  const [winner, setWinner] = useState('')
 
   useEffect(() => {
     setStatus('initial')
     setBoard(['','','','','','','','',''])
     setTurn('')
-    setResult({ winner: '', blocks: [] })
+    setWinner('')
     setScores({ x: 0, o: 0 })
 
     mode === 'Single'
@@ -50,7 +50,7 @@ function Game({ mode }) {
       const z = board[combo[2]]
 
       if(x && x === y && y === z){
-        return { winner: x, blocks: combo }
+        return x
       }
     }
   }
@@ -66,23 +66,22 @@ function Game({ mode }) {
       const random = options[Math.floor(Math.random() * options.length)][1]
 
       setTimeout(() => {
-        play(random)
+        playTurn(random)
       }, Math.ceil(Math.random()) * 1000)
     }
   })
 
-  const play = x => {
+  const playTurn = x => {
     if(status === 'playing' && !board[x]){
       board[x] = turn
       setBoard(board)
       setTurn(turn === 'x' ? 'o' : 'x')
 
-      const gameOver = checkWin(board)
+      const winner = checkWin(board)
 
-      if(gameOver) {
-        const { winner } = gameOver
+      if(winner) {
         setScores({ ...scores, [winner]: scores[winner] + 1 })
-        setResult(gameOver)
+        setWinner(winner)
         setStatus('complete')
       } else if(board.indexOf('') === -1) {
         setStatus('complete')
@@ -98,7 +97,7 @@ function Game({ mode }) {
 
   const resetGame = () => {
     setBoard(['','','','','','','','',''])
-    setTurn('x')
+    setTurn(starts)
   }
 
   const newGame = () => {
@@ -106,7 +105,7 @@ function Game({ mode }) {
     setStarts(starter)
     setTurn(starter)
     setStatus('playing')
-    setResult({ winner: '', blocks: [] })
+    setWinner({ winner: '', blocks: [] })
     setBoard(['','','','','','','','',''])
   }
 
@@ -130,7 +129,7 @@ function Game({ mode }) {
                   return (turn === 'x' ? players[0] : players[1]) + '\'s turn'
     }
     if(status === 'complete') {
-      if(isOver)  return (result.winner === 'x' ? players[0] : players[1]) + ' wins!'
+      if(isOver)  return (winner === 'x' ? players[0] : players[1]) + ' wins!'
       if(isFull)  return 'Tie!'
     }
   }
@@ -139,8 +138,8 @@ function Game({ mode }) {
 
   return (
     <Screen>
-      <Banner status={status} message={message} startGame={startGame} newGame={newGame} resetGame={resetGame} />
-      <Board play={play} image={image} />
+      <Banner mode={mode} turn={turn} status={status} message={message} startGame={startGame} newGame={newGame} resetGame={resetGame} />
+      <Board mode={mode} turn={turn} playTurn={playTurn} image={image} />
       <Scores mode={mode} scores={scores} players={players} />
     </Screen>
   )

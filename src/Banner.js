@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function Banner({ status, message, startGame, newGame, resetGame }) {
+function Banner({ mode, turn, status, message, startGame, newGame, resetGame }) {
+
+  const disabled = mode === 'Single' && status === 'playing' && turn === 'o' // if the computer is playing
 
   const getButton = () => {
     switch(status) {
-      case 'initial':   return <Button onClick={startGame}> Start Game </Button>
-      case 'complete':  return <Button onClick={newGame}> New Game </Button>
-      default:          return <Button onClick={resetGame}> Reset Game </Button>
+      case 'initial':   return <Button disabled={disabled} onClick={startGame}> Start Game </Button>
+      case 'complete':  return <Button disabled={disabled} onClick={newGame}> New Game </Button>
+      default:          return <Button disabled={disabled} onClick={resetGame}> Reset Game </Button>
     }
   }
 
@@ -38,6 +40,11 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   font-weight: 500;
+
+  ${props => props.disabled && `
+    cursor: not-allowed;
+    opacity: 0.5;
+  `}
 `;
 
 export default Banner;

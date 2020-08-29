@@ -1,9 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function Board({ play, image }) {
+function Board({ mode, turn, playTurn, image }) {
+
+  const play = coordinate => {
+    if(mode === 'Single' && turn === 'o') return
+    playTurn(coordinate)
+  }
+
   return (
-    <Container>
+    <div>
       <Row>
         <Box id="s00" onClick={() => play(0)}> {image(0)} </Box>
         <Box id="s01" onClick={() => play(1)}> {image(1)} </Box>
@@ -19,13 +25,9 @@ function Board({ play, image }) {
         <Box id="s21" onClick={() => play(7)}> {image(7)} </Box>
         <Box id="s22" onClick={() => play(8)}> {image(8)} </Box>
       </Row>
-    </Container>
+    </div>
   );
 }
-
-const Container = styled.div`
-
-`;
 
 const Row = styled.div`
   display: flex;
