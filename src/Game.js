@@ -10,12 +10,25 @@ function Game({ mode }) {
   // ENTIRE SESSION
   const [players, setPlayers] = useState(['Player', 'Computer'])
   const [status, setStatus] = useState('initial') // initial, playing, complete
-  const [scores, setScores] = useState({ Player: 0, Computer: 0 })
+  const [scores, setScores] = useState({ x: 0, o: 0 })
 
   // EACH ROUND
+  const [starts, setStarts] = useState('')
   const [board, setBoard] = useState(['','','','','','','','',''])
   const [turn, setTurn] = useState('')
   const [result, setResult] = useState({ winner: '', blocks: [] })
+
+  useEffect(() => {
+    setStatus('initial')
+    setBoard(['','','','','','','','',''])
+    setTurn('')
+    setResult({ winner: '', blocks: [] })
+    setScores({ x: 0, o: 0 })
+
+    mode === 'Single'
+      ? setPlayers(['Player', 'Computer'])
+      : setPlayers(['Player 1', 'Player 2'])
+  }, [mode])
 
   const checkWin = () => {
     const combos = [
@@ -37,29 +50,10 @@ function Game({ mode }) {
       const z = board[combo[2]]
 
       if(x && x === y && y === z){
-        const winner = x === 'X' ? players[0] : players[1]
-        return { winner, blocks: combo }
+        return { winner: x, blocks: combo }
       }
     }
   }
-
-
-  useEffect(() => {
-    setStatus('initial')
-    setBoard(['','','','','','','','',''])
-    setTurn('')
-    setResult({ winner: '', blocks: [] })
-
-    if(mode === 'Single') {
-      setPlayers(['Player', 'Computer'])
-      setScores({ Player: 0, Computer: 0 })
-    } else {
-      setPlayers(['Player 1', 'Player 2'])
-      setScores({ 'Player 1': 0, 'Player 2': 0 })
-    }
-  }, [mode])
-
-
 
   const isFull = board.indexOf('') === -1
   const isEmpty = !board.some(item => item)
@@ -67,7 +61,7 @@ function Game({ mode }) {
 
   useEffect(() => {
     // if it is the computer's turn
-    if(status === 'playing' && !isFull && turn === ['X', 'O'][players.indexOf('Computer')]) {
+    if(mode === 'Single' && !isFull && turn === 'o') {
       const options = board.map((square, index) => [square, index]).filter(option => !option[0])
       const random = options[Math.floor(Math.random() * options.length)][1]
 
@@ -81,39 +75,39 @@ function Game({ mode }) {
     if(status === 'playing' && !board[x]){
       board[x] = turn
       setBoard(board)
-      setTurn(turn === 'X' ? 'O' : 'X')
+      setTurn(turn === 'x' ? 'o' : 'x')
 
       const gameOver = checkWin(board)
 
       if(gameOver) {
         const { winner } = gameOver
+        setScores({ ...scores, [winner]: scores[winner] + 1 })
         setResult(gameOver)
         setStatus('complete')
-        setScores({ ...scores, [winner]: scores[winner] + 1 })
-      } else {
-        if(board.indexOf('') === -1) {
-          setStatus('complete')
-        }
+      } else if(board.indexOf('') === -1) {
+        setStatus('complete')
       }
     }
   }
 
   const startGame = () => {
     setStatus('playing')
-    setTurn('X')
+    setStarts('x')
+    setTurn('x')
   }
 
   const resetGame = () => {
     setBoard(['','','','','','','','',''])
-    setTurn('X')
+    setTurn('x')
   }
 
   const newGame = () => {
+    const starter = starts === 'x' ? 'o' : 'x'
+    setStarts(starter)
+    setTurn(starter)
     setStatus('playing')
     setResult({ winner: '', blocks: [] })
     setBoard(['','','','','','','','',''])
-    setTurn('X')
-    setPlayers([players[1], players[0]])
   }
 
   const searchTree = board => {
@@ -122,8 +116,8 @@ function Game({ mode }) {
 
   const image = x => {
     switch (board[x]) {
-      case 'X': return <Image src={require('./icons/X.png')} />
-      case 'O': return <Image src={require('./icons/O.png')} />
+      case 'x': return <Image src={require('./icons/x.png')} />
+      case 'o': return <Image src={require('./icons/o.png')} />
       default:  return <div></div>
     }
   }
@@ -132,11 +126,11 @@ function Game({ mode }) {
   const getMessage = () => {
     if(status === 'initial') return `${mode} Player`
     if(status === 'playing') {
-      if(isEmpty) return players[0] + ' starts'
-                  return (turn === 'X' ? players[0] : players[1]) + '\'s turn'
+      if(isEmpty) return (starts === 'x' ? players[0] : players[1]) + ' starts'
+                  return (turn === 'x' ? players[0] : players[1]) + '\'s turn'
     }
     if(status === 'complete') {
-      if(isOver)  return result.winner + ' wins!'
+      if(isOver)  return (result.winner === 'x' ? players[0] : players[1]) + ' wins!'
       if(isFull)  return 'Tie!'
     }
   }
@@ -147,7 +141,7 @@ function Game({ mode }) {
     <Screen>
       <Banner status={status} message={message} startGame={startGame} newGame={newGame} resetGame={resetGame} />
       <Board play={play} image={image} />
-      <Scores mode={mode} scores={scores} />
+      <Scores mode={mode} scores={scores} players={players} />
     </Screen>
   )
 }

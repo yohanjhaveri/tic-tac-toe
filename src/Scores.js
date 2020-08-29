@@ -1,20 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function Scores({ mode, scores, message }) {
-  const players = mode === 'Single'
-    ? ['Player', 'Computer']
-    : ['Player 1', 'Player 2']
-
+function Scores({ mode, scores, players, message }) {
   return (
     <Container>
       <Player>
         <Name>{ players[0] }</Name>
-        <Score>{ scores[players[0]] }</Score>
+        <Score><Icon src={require('./icons/x.png')} />{ scores['x'] }</Score>
       </Player>
       <Player>
         <Name>{ players[1] }</Name>
-        <Score>{ scores[players[1]] }</Score>
+        <Score><Icon src={require('./icons/o.png')} />{ scores['o'] }</Score>
       </Player>
     </Container>
   );
@@ -25,23 +21,26 @@ const Container = styled.div`
 `;
 
 const Player = styled.div`
-  width: 125px;
+  width: 140px;
   height: 100%;
   text-align: center;
 `;
 
 const Icon = styled.img`
-  width: 30px;
-  height: 30px;
-  margin-top: 10px;
+  height: 22px;
+  margin-right: 10px;
 `;
 
 const Name = styled.h3`
 
 `;
 
+const Image = styled.img`
+  height: 20px;
+`;
+
 const Score = styled.h1`
-  color: #33bcea;
+  // color: #33bcea;
 `;
 
 export default Scores;
