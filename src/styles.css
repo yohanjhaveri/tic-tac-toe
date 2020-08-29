@@ -1,0 +1,24 @@
+* {
+    font-family: Avenir;
+    letter-spacing: 0.5px;
+    color: white;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html, body, main, #root, #main {
+    width: 100%;
+    height: 100%;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background: #05286B;
+}
+
+::selection {
+  background: #72EABC;
+}
