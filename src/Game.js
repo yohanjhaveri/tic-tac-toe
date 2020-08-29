@@ -2,72 +2,41 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import './TicTacToe.css'
 
+import { checkWin, randomComputer } from './functions'
+
 import Banner from './Banner'
 import Board from './Board'
 import Scores from './Scores'
 
-function Game({ mode }) {
+function Game({ mode, players }) {
   // ENTIRE SESSION
-  const [players, setPlayers] = useState(['Player', 'Computer'])
   const [status, setStatus] = useState('initial') // initial, playing, complete
   const [scores, setScores] = useState({ x: 0, o: 0 })
 
   // EACH ROUND
-  const [starts, setStarts] = useState('')
   const [board, setBoard] = useState(['','','','','','','','',''])
+  const [starts, setStarts] = useState('')
   const [turn, setTurn] = useState('')
   const [winner, setWinner] = useState('')
 
   useEffect(() => {
     setStatus('initial')
-    setBoard(['','','','','','','','',''])
-    setTurn('')
-    setWinner('')
     setScores({ x: 0, o: 0 })
-
-    mode === 'Single'
-      ? setPlayers(['Player', 'Computer'])
-      : setPlayers(['Player 1', 'Player 2'])
   }, [mode])
 
-  const checkWin = () => {
-    const combos = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-
-      [0, 4, 8],
-      [6, 4, 2]
-    ]
-
-    for(let combo of combos){
-      const x = board[combo[0]]
-      const y = board[combo[1]]
-      const z = board[combo[2]]
-
-      if(x && x === y && y === z){
-        return x
-      }
-    }
-  }
-
-  const isFull = board.indexOf('') === -1
-  const isEmpty = !board.some(item => item)
-  const isOver = !!checkWin()
+  const inverse = icon => icon === 'x' ? 'o' : 'x'
+  const player = icon => icon === 'x' ? players[0] : players[1]
 
   useEffect(() => {
-    // if it is the computer's turn
-    if(mode === 'Single' && !isFull && turn === 'o') {
-      const options = board.map((square, index) => [square, index]).filter(option => !option[0])
-      const random = options[Math.floor(Math.random() * options.length)][1]
+    const isComputerTurn = mode === 'Single' && turn === 'o'
+
+    if(isComputerTurn) {
+      const choice = randomComputer(board)
+      const delay = Math.random() * 1000
 
       setTimeout(() => {
-        playTurn(random)
-      }, Math.ceil(Math.random()) * 1000)
+        playTurn(choice)
+      }, delay)
     }
   })
 
@@ -75,7 +44,7 @@ function Game({ mode }) {
     if(status === 'playing' && !board[x]){
       board[x] = turn
       setBoard(board)
-      setTurn(turn === 'x' ? 'o' : 'x')
+      setTurn(inverse(turn))
 
       const winner = checkWin(board)
 
@@ -83,7 +52,11 @@ function Game({ mode }) {
         setScores({ ...scores, [winner]: scores[winner] + 1 })
         setWinner(winner)
         setStatus('complete')
-      } else if(board.indexOf('') === -1) {
+      }
+
+      const isFull = board.indexOf('') === -1
+
+      if(isFull) {
         setStatus('complete')
       }
     }
@@ -91,8 +64,10 @@ function Game({ mode }) {
 
   const startGame = () => {
     setStatus('playing')
+    setBoard(['','','','','','','','',''])
     setStarts('x')
     setTurn('x')
+    setWinner('')
   }
 
   const resetGame = () => {
@@ -101,12 +76,13 @@ function Game({ mode }) {
   }
 
   const newGame = () => {
-    const starter = starts === 'x' ? 'o' : 'x'
+    const starter = inverse(starts)
+
+    setStatus('playing')
+    setBoard(['','','','','','','','',''])
     setStarts(starter)
     setTurn(starter)
-    setStatus('playing')
-    setWinner({ winner: '', blocks: [] })
-    setBoard(['','','','','','','','',''])
+    setWinner('')
   }
 
   const searchTree = board => {
@@ -114,27 +90,33 @@ function Game({ mode }) {
   }
 
   const image = x => {
-    switch (board[x]) {
-      case 'x': return <Image src={require('./icons/x.png')} />
-      case 'o': return <Image src={require('./icons/o.png')} />
-      default:  return <div></div>
-    }
+    return board[x]
+      ? <Image src={require(`./icons/${board[x]}.png`)} />
+      : <div></div>
   }
 
 
   const getMessage = () => {
-    if(status === 'initial') return `${mode} Player`
-    if(status === 'playing') {
-      if(isEmpty) return (starts === 'x' ? players[0] : players[1]) + ' starts'
-                  return (turn === 'x' ? players[0] : players[1]) + '\'s turn'
-    }
-    if(status === 'complete') {
-      if(isOver)  return (winner === 'x' ? players[0] : players[1]) + ' wins!'
-      if(isFull)  return 'Tie!'
+    const isEmpty = !board.some(item => item)
+
+    switch(status) {
+      case 'initial': return `${mode} Player`
+
+      case 'playing': return (
+        isEmpty
+        ? `${player(starts)} starts`
+        : `${player(turn)}'s turn`
+      )
+
+      case 'complete': return (
+        winner
+        ? `${player(winner)} wins!`
+        : 'Tie!'
+      )
     }
   }
 
-  const message = getMessage()
+  const message = getMessage(status, board, winner)
 
   return (
     <Screen>

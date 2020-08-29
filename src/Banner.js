@@ -17,7 +17,7 @@ function Banner({ mode, turn, status, message, startGame, newGame, resetGame }) 
 
   return (
     <Container>
-      <Heading>{ message }</Heading>
+      <h1>{ message }</h1>
       { BUTTON }
     </Container>
   );
@@ -28,10 +28,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   grid-gap: 10px;
-`;
-
-const Heading = styled.h1`
-
 `;
 
 const Button = styled.button`
