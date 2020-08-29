@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function Banner({ status, message, startGame, resetGame }) {
+function Banner({ status, message, startGame, newGame, resetGame }) {
 
   const getButton = () => {
     switch(status) {
       case 'initial':   return <Button onClick={startGame}> Start Game </Button>
-      case 'complete':  return <Button onClick={resetGame}> Reset Game </Button>
-      default:          return <div></div>
+      case 'complete':  return <Button onClick={newGame}> New Game </Button>
+      default:          return <Button onClick={resetGame}> Reset Game </Button>
     }
   }
 

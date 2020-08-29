@@ -104,6 +104,11 @@ function Game({ mode }) {
   }
 
   const resetGame = () => {
+    setBoard(['','','','','','','','',''])
+    setTurn('X')
+  }
+
+  const newGame = () => {
     setStatus('playing')
     setResult({ winner: '', blocks: [] })
     setBoard(['','','','','','','','',''])
@@ -140,7 +145,7 @@ function Game({ mode }) {
 
   return (
     <Screen>
-      <Banner status={status} message={message} startGame={startGame} resetGame={resetGame} />
+      <Banner status={status} message={message} startGame={startGame} newGame={newGame} resetGame={resetGame} />
       <Board play={play} image={image} />
       <Scores mode={mode} scores={scores} />
     </Screen>
