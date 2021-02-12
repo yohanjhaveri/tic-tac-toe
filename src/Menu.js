@@ -1,16 +1,20 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 function Menu({ mode, setMode }) {
   return (
     <Container>
       <Logo>
-        <Icon src={require('./img/png/ghost.png')} />
+        <Icon src={require("./img/png/ghost.png")} />
         <Name> React Games </Name>
       </Logo>
       <Modes>
-        <Mode onClick={() => setMode('Single')} selected={mode === 'Single'}><ModeIcon className="fas fa-user" /></Mode>
-        <Mode onClick={() => setMode('Multi')} selected={mode === 'Multi'}><ModeIcon className="fas fa-users" /></Mode>
+        <Mode onClick={() => setMode("Single")} selected={mode === "Single"}>
+          <ModeIcon className="fas fa-user" />
+        </Mode>
+        <Mode onClick={() => setMode("Multi")} selected={mode === "Multi"}>
+          <ModeIcon className="fas fa-users" />
+        </Mode>
       </Modes>
     </Container>
   );
@@ -31,7 +35,6 @@ const Icon = styled.img`
 
 const Name = styled.h1`
   font-size: 25px;
-  // color: #33bcea;
 `;
 
 const Logo = styled.div`
@@ -55,7 +58,7 @@ const Mode = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: ${props => props.selected && 'rgb(51, 188, 234, 0.1)'};
+  background: ${(props) => props.selected && "rgb(51, 188, 234, 0.1)"};
 `;
 
 const ModeIcon = styled.span`
@@ -63,4 +66,4 @@ const ModeIcon = styled.span`
   cursor: pointer;
 `;
 
-export default Menu
+export default Menu;

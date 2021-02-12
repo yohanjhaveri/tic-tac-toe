@@ -1,24 +1,28 @@
 * {
-    font-family: Avenir;
-    letter-spacing: 0.5px;
-    color: white;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  font-family: Avenir;
+  letter-spacing: 0.5px;
+  color: white;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-html, body, main, #root, #main {
-    width: 100%;
-    height: 100%;
+html,
+body,
+main,
+#root,
+#main {
+  width: 100%;
+  height: 100%;
 }
 
 main {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background: #05286B;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background: #05286b;
 }
 
 ::selection {
-  background: #72EABC;
+  /* background: #72EABC; */
 }

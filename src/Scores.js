@@ -1,16 +1,24 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
+import x from "./icons/x.png";
+import o from "./icons/o.png";
 
 function Scores({ mode, scores, players, message }) {
   return (
     <Container>
       <Player>
-        <Name>{ players[0] }</Name>
-        <Score><Icon src={require('./icons/x.png')} />{ scores['x'] }</Score>
+        <Name>{players[0]}</Name>
+        <Score>
+          <Icon src={x} />
+          {scores.x}
+        </Score>
       </Player>
       <Player>
-        <Name>{ players[1] }</Name>
-        <Score><Icon src={require('./icons/o.png')} />{ scores['o'] }</Score>
+        <Name>{players[1]}</Name>
+        <Score>
+          <Icon src={o} />
+          {scores.o}
+        </Score>
       </Player>
     </Container>
   );
@@ -31,9 +39,7 @@ const Icon = styled.img`
   margin-right: 10px;
 `;
 
-const Name = styled.h3`
-
-`;
+const Name = styled.h3``;
 
 const Image = styled.img`
   height: 20px;
